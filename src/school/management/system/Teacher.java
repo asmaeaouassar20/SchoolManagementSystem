@@ -2,6 +2,7 @@ package school.management.system;
 
 public class Teacher {
     private int id;
+
     private String name;
     private float salary;
 
@@ -29,5 +30,11 @@ public class Teacher {
      */
     public void setSalary(float salary){
         this.salary=salary;
+    }
+
+
+    public void getPaid(float newSalary){
+        this.salary+=newSalary;
+        School.updateTotalMoneySpent(newSalary);
     }
 }

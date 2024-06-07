@@ -16,8 +16,8 @@ public class School {
 
     private float totalFeesForStudent;
 
-    private float totalMoneyEarned;
-    private float totalMoneySpent;
+    private static float totalMoneyEarned;
+    private static float totalMoneySpent;
 
     public School(List<Teacher> teachers,List<Student> students,float totalFeesForStudent){
         this.teachers=teachers;
@@ -76,4 +76,14 @@ public class School {
             e.printStackTrace();
         }
     }
+
+
+    public static void updateTotalMoneyEarned(float moneyEarned){
+        totalMoneyEarned+=moneyEarned;
+    }
+    public static void updateTotalMoneySpent(float moneySpent){
+        totalMoneySpent+=moneySpent;
+    }
+
+
 }
