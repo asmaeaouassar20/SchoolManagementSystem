@@ -7,11 +7,11 @@ public class Student {
     private float feesPaid;
 
 
-    public Student(int id, String name,float grade){
+    public Student(int id, String name){
         this.id=id;
         this.name=name;
-        this.grade=grade;
-        feesPaid=0;  // initially
+        this.grade=0;
+        feesPaid=School.TotalFeesForStudent;  // initially
     }
 
 

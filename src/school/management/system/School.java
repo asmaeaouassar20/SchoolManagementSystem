@@ -14,17 +14,17 @@ public class School {
     private List<Teacher> teachers;
     private List<Student> students;
 
-    private float totalFeesForStudent;
+    static float TotalFeesForStudent;
 
     private static float totalMoneyEarned;
     private static float totalMoneySpent;
 
-    public School(List<Teacher> teachers,List<Student> students,float totalFeesForStudent){
+    public School(List<Teacher> teachers,List<Student> students,float totalFeesForStudent,float salariesTotal){
         this.teachers=teachers;
         this.students=students;
-        this.totalFeesForStudent=totalFeesForStudent;
-        totalMoneyEarned=0;
-        totalMoneySpent=0;
+        TotalFeesForStudent=totalFeesForStudent;
+        totalMoneyEarned=totalFeesForStudent;
+        totalMoneySpent=salariesTotal;
     }
 
 
