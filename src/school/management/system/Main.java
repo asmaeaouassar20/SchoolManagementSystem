@@ -107,10 +107,39 @@ public class Main {
                        case 1 : addStudent(connection,scanner,totalFeesForStudent);
                                 break;
                        case 2: {
-                           System.out.print("id of the student that you want to modify: ");
+                           System.out.print("Enter the id of the student you want to modify: ");
                            int id=scanner.nextInt();
+                           String query="SELECT id FROM students WHERE id=?";
+                         try{
+                             PreparedStatement preparedStatement=connection.prepareStatement(query);
 
-                           System.out.println("1: modify name");
+                             preparedStatement.setInt(1,id);
+
+                             ResultSet resultSet=preparedStatement.executeQuery();
+                             if(resultSet.next()){
+                                 System.out.println("1: modify name");
+                                 System.out.println("2: modify the grade");
+
+                                 System.out.print("Enter your choice : ");
+                                 int choice3=scanner.nextInt();
+                                 switch (choice3){
+                                     case 1:{
+                                         modifyName(connection,scanner,id);
+                                         break;
+                                     }
+                                     case 2 :{
+
+                                         break;
+                                     }
+                                 }
+
+                             }else{
+                                 System.out.println("id="+id+" not found");
+                             }
+                         }catch (SQLException e){
+                             e.printStackTrace();
+                         }
+
 
                            break;
                        }
@@ -169,9 +198,28 @@ public class Main {
             e.printStackTrace();
         }
     }
-    static void modifyName(){
-        System.out.println();
+    static void modifyName(Connection connection,Scanner scanner,int id){
+        System.out.print("Enter the new name : ");
+        String name=scanner.next();
+        String query="UPDATE students SET name=? WHERE id=?";
+        try{
+            PreparedStatement preparedStatement=connection.prepareStatement(query);
+            preparedStatement.setString(1,name);
+            preparedStatement.setInt(2,id);
+            preparedStatement.executeUpdate();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
     }
 
+    static void modifyGrade(Connection connection,Scanner scanner) throws ExceptionGrade {
+        System.out.print("Enter the new grade : ");
+        float grade= scanner.nextFloat();
+        if(grade<0 || grade>20) throw new ExceptionGrade(grade);
+        else{
+            String query="UPDATE students SET grade=? WHERE id=?";
+
+        }
+    }
 
 }
