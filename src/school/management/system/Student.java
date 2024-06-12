@@ -36,9 +36,5 @@ public class Student {
         this.grade=grade;
     }
 
-    public void payFees(float feesP){
-        this.feesPaid+=feesP;
-        School.updateTotalMoneyEarned(feesP);
-    }
 
 }

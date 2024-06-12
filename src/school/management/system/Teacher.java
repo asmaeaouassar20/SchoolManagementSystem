@@ -24,17 +24,5 @@ public class Teacher {
     }
 
 
-    /**
-     * update the salary of the teacher
-     * @param salary the salary of the teacher
-     */
-    public void setSalary(float salary){
-        this.salary=salary;
-    }
 
-
-    public void getPaid(float newSalary){
-        this.salary+=newSalary;
-        School.updateTotalMoneySpent(newSalary);
-    }
 }

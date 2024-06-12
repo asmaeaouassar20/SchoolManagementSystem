@@ -1,7 +1,11 @@
 package school.management.system;
 
+import jdk.jshell.spi.SPIResolutionException;
+
 import java.io.*;
+import java.nio.file.StandardCopyOption;
 import java.sql.*;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -13,7 +17,7 @@ public class Main {
 
         // information to connect to database
         // **********************************************************
-        String url="jdbc:mysql://localhost:3306/school";
+        String url="jdbc:mysql://localhost:3306/schoolmanagementsystem";
         String user="root";
         String password="";
         Connection connection=null;
@@ -29,17 +33,18 @@ public class Main {
         }
         System.out.println("database connection successful ! \n\n");
 
-        Scanner scanner=new Scanner(System.in);
-        System.out.print("the total fees each student should pay is : ");
-        float totalFeesForStudent=scanner.nextFloat();
 
 
 
+        //-------------------------------------------------------------------------------------
         // fill the database with information from files
         // pick up the files
         File fileOfTeachers=new File("D://javaPoject//schoolManagementSystem//src/teachers.txt");
         File fileOfStudents=new File("D://javaPoject//schoolManagementSystem//src/students.txt");
 
+        Scanner scanner=new Scanner(System.in);
+        float totalFeesForStudent=0;
+        float salariesTotal=0;
         // To read from files
        try{
            FileReader fileReader1=new FileReader(fileOfTeachers);
@@ -59,7 +64,10 @@ public class Main {
                StringBuilder stringBuilder=new StringBuilder();
 
                for(String w:words){
-                    if(isFloat(w)) salary=Float.parseFloat(w);
+                    if(isFloat(w)) {
+                        salary=Float.parseFloat(w);
+                        salariesTotal+=salary;
+                    }
                     else{
                         stringBuilder.append(w);
                         stringBuilder.append(" ");
@@ -78,6 +86,9 @@ public class Main {
            }
            System.out.println("the 'teachers' table is filled with success ! \n\n");
 
+
+           System.out.print("the total fees each student should pay is : ");
+           totalFeesForStudent=scanner.nextFloat();
            line=bufferedReader2.readLine();
            while(line!=null){
                 String query="INSERT INTO students(name,feesPaid) VALUES(?,?)";
@@ -93,7 +104,8 @@ public class Main {
        } catch (IOException | SQLException e){
            e.printStackTrace();
        }
-
+        //-------------------------------------------------------------------------------------
+        School school=new School(totalFeesForStudent,salariesTotal);
 
        while(true){
            menu();
@@ -102,9 +114,11 @@ public class Main {
                case 1 : {
                    System.out.println("1 : add a student");
                    System.out.println("2 : set a student");
+                   System.out.println("3 : delete a student");
+                   System.out.println("4 : view student");
                    int choice2=scanner.nextInt();
                    switch (choice2){
-                       case 1 : addStudent(connection,scanner,totalFeesForStudent);
+                       case 1 : school.addStudent(connection,scanner,totalFeesForStudent);
                                 break;
                        case 2: {
                            System.out.print("Enter the id of the student you want to modify: ");
@@ -119,28 +133,55 @@ public class Main {
                              if(resultSet.next()){
                                  System.out.println("1: modify name");
                                  System.out.println("2: modify the grade");
+                                 System.out.println("3: pay fees");
 
                                  System.out.print("Enter your choice : ");
                                  int choice3=scanner.nextInt();
                                  switch (choice3){
                                      case 1:{
-                                         modifyName(connection,scanner,id);
+                                         modifyNameStudent(connection,scanner,id);
                                          break;
                                      }
                                      case 2 :{
-
+                                         modifyGrade(connection,scanner,id);
                                          break;
                                      }
+                                     case 3 :{
+                                         System.out.print("fees paid: ");
+                                         float feesPaid=scanner.nextFloat();
+                                         payFees(school,connection,id,feesPaid);
+                                         break;
+                                     }
+                                     default:
+                                         System.out.println("invalid choice  ! ");
+                                         break;
+
                                  }
 
                              }else{
                                  System.out.println("id="+id+" not found");
                              }
-                         }catch (SQLException e){
+                         }catch (SQLException | ExceptionGrade e){
                              e.printStackTrace();
                          }
 
 
+                           break;
+                       }
+                       case 3 : {
+                           System.out.print("Enter the id of student to delete: ");
+                           int id=scanner.nextInt();
+                           school.deleteStudent(connection,id);
+                           break;
+                       }
+                       case 4 :{
+                           System.out.print("Enter id : ");
+                           int id=scanner.nextInt();
+                           school.viewStudent(connection,id);
+                           break;
+                       }
+                       default:{
+                           System.out.println("invalid choice ! ");
                            break;
                        }
                    }
@@ -148,7 +189,93 @@ public class Main {
                    break;
                }
                case 2 : {
+                   System.out.println("1 : add a teacher");
+                   System.out.println("2 : set a teacher");
+                   System.out.println("3 : delete a teacher");
+                   System.out.println("4 : view teacher");
+                   System.out.print("Enter your choice: ");
+                   int choice2=scanner.nextInt();
+                   switch (choice2){
+                       case 1 :{
+                           school.addTeacher(connection,scanner);
+                           break;
+                       }
+                       case 2 :{
+                               System.out.print("Enter the id of the teacher you want to modify: ");
+                               int id=scanner.nextInt();
+                               String query="SELECT id FROM teachers WHERE id=?";
+                               try{
+                                   PreparedStatement preparedStatement=connection.prepareStatement(query);
 
+                                   preparedStatement.setInt(1,id);
+
+                                   ResultSet resultSet=preparedStatement.executeQuery();
+                                   if(resultSet.next()){
+                                       System.out.println("1: modify name");
+                                       System.out.println("2: modify salary");
+
+                                       System.out.print("Enter your choice : ");
+                                       int choice3=scanner.nextInt();
+                                       switch (choice3){
+                                           case 1:{
+                                               modifyNameTeacher(connection,scanner,id);
+                                               break;
+                                           }
+                                           case 2 :{
+                                               System.out.println("1 : add to salary");
+                                               System.out.println("2 : substruct from a salary");
+                                               System.out.print("Enter your choice : ");
+                                               int choice4=scanner.nextInt();
+                                               switch (choice4){
+                                                   case 1 :{
+                                                       System.out.print("amount to add to salary : ");
+                                                       float  salaryToAdd=scanner.nextFloat();
+                                                       addTosalary(school,connection,salaryToAdd,id);
+                                                       break;
+                                                   }
+                                                   case 2 :{
+                                                       System.out.print("amount to substruct from salary : ");
+                                                       float  salaryToSub=scanner.nextFloat();
+                                                       if(salaryToSub<0) throw new ExceptionSalary(salaryToSub);
+                                                       subFromsalary(school,connection,salaryToSub,id);
+                                                       break;
+                                                   }
+                                                   default:
+                                                       System.out.println("invalid choice ! ");
+                                                       break;
+                                               }
+                                               break;
+                                           }
+                                           default:
+                                               System.out.println("invalid choice ! ");
+                                               break;
+
+                                       }
+
+                                   }else{
+                                       System.out.println("id="+id+" not found");
+                                   }
+                               }catch (SQLException | ExceptionSalary e){
+                                   e.printStackTrace();
+                               }
+                           break;
+                       }
+                       case 3 :{
+                           System.out.print("Enter id of teacher to delete: ");
+                           int id=scanner.nextInt();
+                           school.deleteTeacher(connection,id);
+                           break;
+                       }
+                       case 4 :{
+                           System.out.print("Enter id of teacher : ");
+                           int id=scanner.nextInt();
+                           school.viewTeacher(connection,id);
+                           break;
+                       }
+                       default:
+                           System.out.println("invalid choice !");
+                           break;
+                   }
                    break;
                }
                case 3 :{
@@ -175,30 +302,15 @@ public class Main {
         }
     }
     static void menu(){
-        System.out.println("|1| : teachers");
-        System.out.println("|2| : students");
+        System.out.println("|1| : students");
+        System.out.println("|2| : teachers");
         System.out.println("|3| : exit");
     }
 
 
 
-    static void addStudent(Connection connection,Scanner scanner,float totalFeesForStudent){
-        System.out.print("the name of the student: ");
-        String name=scanner.next();
 
-        String query="INSERT INTO students(name,feesPaid) VALUES(?,?)";
-        try{
-            PreparedStatement preparedStatement=connection.prepareStatement(query);
-
-            preparedStatement.setString(1,name);
-            preparedStatement.setFloat(2,totalFeesForStudent);
-
-            preparedStatement.executeUpdate();
-        }catch(SQLException e){
-            e.printStackTrace();
-        }
-    }
-    static void modifyName(Connection connection,Scanner scanner,int id){
+    static void modifyNameStudent(Connection connection,Scanner scanner,int id){
         System.out.print("Enter the new name : ");
         String name=scanner.next();
         String query="UPDATE students SET name=? WHERE id=?";
@@ -212,14 +324,80 @@ public class Main {
         }
     }
 
-    static void modifyGrade(Connection connection,Scanner scanner) throws ExceptionGrade {
+    static void modifyGrade(Connection connection,Scanner scanner,int id) throws ExceptionGrade {
         System.out.print("Enter the new grade : ");
         float grade= scanner.nextFloat();
         if(grade<0 || grade>20) throw new ExceptionGrade(grade);
         else{
             String query="UPDATE students SET grade=? WHERE id=?";
-
+            try{
+                PreparedStatement preparedStatement=connection.prepareStatement(query);
+                preparedStatement.setFloat(1,grade);
+                preparedStatement.setInt(2,id);
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
         }
     }
 
+
+    static void payFees(School school,Connection connection,int id,float feesP){
+        String query="UPDATE students SET feesPaid=feesPaid+? WHERE id=?";
+        try{
+            PreparedStatement preparedStatement=connection.prepareStatement(query);
+            preparedStatement.setFloat(1,feesP);
+            preparedStatement.setInt(2,id);
+            preparedStatement.executeUpdate();
+            school.updateTotalMoneyEarned(connection,feesP);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+    }
+
+
+
+    static void modifyNameTeacher(Connection connection,Scanner scanner,int id){
+        System.out.print("Enter the new name : ");
+        String name=scanner.next();
+        String query="UPDATE teachers SET name=? WHERE id=?";
+        try{
+            PreparedStatement preparedStatement=connection.prepareStatement(query);
+            preparedStatement.setString(1,name);
+            preparedStatement.setInt(2,id);
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+    static void addTosalary(School school,Connection connection,float salaryToAdd,int id){
+        String query="UPDATE teachers SET salary=salary+? WHERE id=?";
+        try{
+            PreparedStatement preparedStatement=connection.prepareStatement(query);
+            preparedStatement.setFloat(1,salaryToAdd);
+            preparedStatement.setInt(2,id);
+            preparedStatement.executeUpdate();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        school.updateTotalMoneySpent(connection,salaryToAdd);
+    }
+    static void subFromsalary(School school,Connection connection,float salaryToSub,int id){
+        String query1="SELECT salary FROM teachers WHERE id=?";
+        try{
+            PreparedStatement preparedStatement1=connection.prepareStatement(query1);
+            preparedStatement1.setInt(1,id);
+            ResultSet resultSet=preparedStatement1.executeQuery();
+            if(resultSet.getFloat("salary")>=salaryToSub){
+                String query2="UPDATE teachers SET salary=salary-? WHERE id=?";
+                PreparedStatement preparedStatement2=connection.prepareStatement(query2);
+                preparedStatement2.setFloat(1,salaryToSub);
+                preparedStatement2.setInt(2,id);
+                preparedStatement2.executeUpdate();
+            }else{
+                System.out.println("oops! negative salary value");
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
 }

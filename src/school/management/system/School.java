@@ -2,54 +2,23 @@ package school.management.system;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class School {
-    // The school supposed to provide files of students and teachers,
-    // so we don't know in advance the number of students and teachers
-    // so we use ArrayList
 
-    private List<Teacher> teachers;
-    private List<Student> students;
+    static float TotalFeesForStudent; // That every student should pay
 
-    static float TotalFeesForStudent;
+    private  float totalMoneyEarned;
+    private  float totalMoneySpent;
 
-    private static float totalMoneyEarned;
-    private static float totalMoneySpent;
-
-    public School(List<Teacher> teachers,List<Student> students,float totalFeesForStudent,float salariesTotal){
-        this.teachers=teachers;
-        this.students=students;
+    public School(float totalFeesForStudent,float salariesTotal){
         TotalFeesForStudent=totalFeesForStudent;
         totalMoneyEarned=totalFeesForStudent;
         totalMoneySpent=salariesTotal;
-    }
-
-
-    /**
-     * add the teacher to ArrayList teachers and to the table teachers of the data base
-     * @param teacher the teacher to add
-     * @param connection to connect to the database
-     */
-    public void addTeacher(Teacher teacher, Connection connection){
-        this.teachers.add(teacher);
-        try{
-            String requete="INSERT INTO teachers(id, name, salary) VALUES(?,?,?)";
-            PreparedStatement preparedStatement=connection.prepareStatement(requete);
-
-            preparedStatement.setInt(1,teacher.getId());
-            preparedStatement.setString(2,teacher.getName());
-            preparedStatement.setFloat(3,teacher.getSalary());
-
-            int teacherAdded=preparedStatement.executeUpdate();
-
-            if(teacherAdded>0) System.out.println("teacher added successfully ! ");
-            else System.out.println("failed to add the teacher ! ");
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
 
@@ -59,7 +28,6 @@ public class School {
      * @param connection to connect to the database
      */
     public void addStudent(Student student,Connection connection){
-        this.students.add(student);
         try{
             String requete="INSERT INTO students(id,name,grade,feesPaid) VALUES(?,?,?,?)";
             PreparedStatement preparedStatement=connection.prepareStatement(requete);
@@ -78,12 +46,108 @@ public class School {
     }
 
 
-    public static void updateTotalMoneyEarned(float moneyEarned){
-        totalMoneyEarned+=moneyEarned;
+     void updateTotalMoneyEarned(Connection connection,float moneyEarned){
+        String query="UPDATE school SET totalMoneyEarned=totalMoneyEarned+?";
+        try{
+            PreparedStatement preparedStatement=connection.prepareStatement(query);
+            preparedStatement.setFloat(1,moneyEarned);
+            preparedStatement.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
     }
-    public static void updateTotalMoneySpent(float moneySpent){
-        totalMoneySpent+=moneySpent;
+    public  void updateTotalMoneySpent(Connection connection,float moneySpent){
+        String query="UPDATE teachers SET totalMoneySpent=totalMoneySpent+?";
+        try{
+            PreparedStatement preparedStatement=connection.prepareStatement(query);
+            preparedStatement.setFloat(1,moneySpent);
+            preparedStatement.executeUpdate();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
     }
 
+
+
+    void addStudent(Connection connection, Scanner scanner, float totalFeesForStudent){
+        System.out.print("the name of the student: ");
+        String name=scanner.next();
+
+        String query="INSERT INTO students(name,feesPaid) VALUES(?,?)";
+        try{
+            PreparedStatement preparedStatement=connection.prepareStatement(query);
+
+            preparedStatement.setString(1,name);
+            preparedStatement.setFloat(2,totalFeesForStudent);
+
+            preparedStatement.executeUpdate();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+    void deleteStudent(Connection connection,int id){
+        String query="DELETE FROM students WHERE id=?";
+        try{
+            PreparedStatement preparedStatement=connection.prepareStatement(query);
+            preparedStatement.setInt(1,id);
+            preparedStatement.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+    void viewStudent(Connection connection,int id){
+        String query="SELECT * FROM students WHERE id=?";
+        try{
+            PreparedStatement preparedStatement=connection.prepareStatement(query);
+            preparedStatement.setInt(1,id);
+            ResultSet resultSet=preparedStatement.executeQuery();
+            while(resultSet.next()){
+                System.out.println("id : "+resultSet.getInt("id"));
+                System.out.println("name : "+resultSet.getString("name"));
+                System.out.println("grade : "+resultSet.getFloat("grade"));
+                System.out.println("fees paid : "+resultSet.getFloat("feesPaid"));
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    // ---------------------------------------------------------------
+    void addTeacher(Connection connection,Scanner scanner){
+        String query="INSERT INTO teachers(name,salary) VALUES(?,?)";
+        System.out.print("Enter the name of the new teacher: ");
+        String name= scanner.next();
+        Float salary=scanner.nextFloat();
+
+        try{
+            PreparedStatement preparedStatement=connection.prepareStatement(query);
+            preparedStatement.setString(1,name);
+            preparedStatement.setFloat(2,salary);
+            preparedStatement.executeUpdate();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+    void deleteTeacher(Connection connection,int id){
+        String query="DELETE FROM teachers WHERE id=?";
+        try{
+            PreparedStatement preparedStatement=connection.prepareStatement(query);
+            preparedStatement.setInt(1,id);
+            preparedStatement.executeUpdate();
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+    void viewTeacher(Connection connection,int id){
+        String query="SELECT * FROM teachers WHERE id=?";
+        try{
+            PreparedStatement preparedStatement=connection.prepareStatement(query);
+            preparedStatement.setInt(1,id);
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
 
 }
