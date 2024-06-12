@@ -2,45 +2,45 @@
 
 * Détail des tables
 
-- Table : Patient
+- Table : students
 _______________________________________________________________________
-Nom de la colonnes |  Type de données  |  Contraintes   |  Description  |
+column name        |  data type        |  Contsraints   |  Description  |
 ___________________|___________________|________________|_______________|
 id		   |	INT	       | PRIMARY KEY    |               |
 		   |		       | AUTO_INCREMENT |               |
 ___________________|___________________|________________|_______________|
-nom                |  VARCHAR(255)     |    NOT NULL    |               |
+name               |  VARCHAR(255)     |    NOT NULL    |               |
 ___________________|___________________|________________|_______________|
-age                |     INT           |   NOT NULL     |               |
+grade              |   FLOAT(2,2)      |   NOT NULL     |               |
 ___________________|___________________|________________|_______________|
-genre              |   VARCHAR(10)     |    NOT NULL    |               |
+feesPaid           |   FLOAT           |    NOT NULL    |               |
 ___________________|___________________|________________|_______________|
 
 
-- Table : Docteur
+- Table : teachers
 _______________________________________________________________________
-Nom de la colonnes |  Type de données  |  Contraintes   |  Description  |
+column name        |  data type        |  Contsraints   |  Description  |
 ___________________|___________________|________________|_______________|
-id                 | INT               | PRIMARY KEY    |               |
+id                 |       INT         | PRIMARY KEY    |               |
                    |                   | AUTO_INCREMENT |               |
 ___________________|___________________|________________|_______________|		   
-nom                | VARCHAR(255)      | NOT NULL       |               |
+name               | VARCHAR(255)      | NOT NULL       |               |
 ___________________|___________________|________________|_______________|
-specialisation     |  VARCHAR(255)     |  NOT NULL      |               |
+salary             |     FLOAT         |  NOT NULL      |               |
 ___________________|___________________|________________|_______________|
 
-- Table : RendezVous
+- Table : school
 ________________________________________________________________________
-Nom de la colonnes |  Type de données  |  Contraintes   |  Description  |
+column name        |  data type        |  Contsraints   |  Description  |
 ___________________|___________________|________________|_______________|
-id                 | INT               |  PRIMARY KEY   |               |
-	           |                   | AUTO_INCREMENt |               |	
+--                 | ----              |  ------------  |               |
+	           |                   | -------------- |               |	
 ___________________|___________________|________________|_______________|               
-                   | INT               |   NOT NULL     |               |
-idPatient          |                   | FOREIGN KEY    |               |          
+                   | ---               |   --------     |               |
+---------          |                   | -----------    |               |          
 ___________________|___________________|________________|_______________|		
-                   | INT               |   NOT NULL     |               |
-idDocteur          |                   | FOREIGN KEY    |               |
+                   | ---               |   NOT NULL     |               |
+---------          |                   | -----------    |               |
 ___________________|___________________|________________|_______________|		
-dateRendezVous     | DATE              |  NOT NULL      |               |
+--------------     | -----             |  NOT NULL      |               |
 ___________________|___________________|________________|_______________|
