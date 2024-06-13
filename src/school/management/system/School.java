@@ -22,28 +22,7 @@ public class School {
     }
 
 
-    /**
-     * add the student to the ArrayList students and to the table students of the database
-     * @param student the student ot add
-     * @param connection to connect to the database
-     */
-    public void addStudent(Student student,Connection connection){
-        try{
-            String requete="INSERT INTO students(id,name,grade,feesPaid) VALUES(?,?,?,?)";
-            PreparedStatement preparedStatement=connection.prepareStatement(requete);
 
-            preparedStatement.setInt(1,student.getId());
-            preparedStatement.setString(2,student.getName());
-            preparedStatement.setFloat(3,student.getGrade());
-            preparedStatement.setFloat(4,student.getFeesPaid());
-
-            int studentAdded=preparedStatement.executeUpdate();
-            if(studentAdded>0) System.out.println("student added successfully ! ");
-            else System.out.println("failed to add the student ! ");
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-    }
 
 
      void updateTotalMoneyEarned(Connection connection,float moneyEarned){
@@ -82,6 +61,7 @@ public class School {
             preparedStatement.setFloat(2,totalFeesForStudent);
 
             preparedStatement.executeUpdate();
+            System.out.println("student \""+name+"\" added successfully ! \n");
         }catch(SQLException e){
             e.printStackTrace();
         }
