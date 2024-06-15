@@ -89,6 +89,7 @@ public class SchoolManagSys {
 
                 PreparedStatement preparedStatement=connection.prepareStatement(query);
                 preparedStatement.setString(1,line);
+               // preparedStatement.setFloat(2,0);
                 preparedStatement.setFloat(2,totalFeesForStudent);
 
                 preparedStatement.executeUpdate();
@@ -105,7 +106,7 @@ public class SchoolManagSys {
 
 
      public  void createSchool() {
-        School school=new School(totalFeesForStudent,salariesTotal);
+        School school=new School(connection,totalFeesForStudent,salariesTotal);
         Scanner scanner=new Scanner(System.in);
 
         while(true){
@@ -291,18 +292,19 @@ public class SchoolManagSys {
                     break;
                 }
                 case 3 :{
+                    System.out.println("\nthank you for using School Management System");
                     return;
                 }
             }
         }
 
-
-    }
+     }
 
 
     public static void main(String[] args) {
         SchoolManagSys schoolManagementSystem=new SchoolManagSys();
         schoolManagementSystem.createSchool();
+
     }
     /**
      * verify if the word can be parsed to float
@@ -335,6 +337,7 @@ public class SchoolManagSys {
             preparedStatement.setString(1,name);
             preparedStatement.setInt(2,id);
             preparedStatement.executeUpdate();
+            System.out.println("the name is changed successfully ! ");
         }catch(SQLException e){
             e.printStackTrace();
         }
@@ -356,7 +359,7 @@ public class SchoolManagSys {
                 preparedStatement.setFloat(1,grade);
                 preparedStatement.setInt(2,id);
                 preparedStatement.executeUpdate();
-                System.out.println("the grade of \""+student+"\" is updated from ("+oldGrade+" to "+grade);
+                System.out.println("the grade of \""+student+"\" is updated from "+oldGrade+" to "+grade);
             }catch (SQLException e){
                 e.printStackTrace();
             }
@@ -370,6 +373,7 @@ public class SchoolManagSys {
             preparedStatement.setInt(2,id);
             preparedStatement.executeUpdate();
             school.updateTotalMoneyEarned(connection,feesP);
+            System.out.println("fees paid successfully !");
         }catch (SQLException e){
             e.printStackTrace();
         }

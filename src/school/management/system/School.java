@@ -15,10 +15,21 @@ public class School {
     private  float totalMoneyEarned;
     private  float totalMoneySpent;
 
-    public School(float totalFeesForStudent,float salariesTotal){
+    public School(Connection connection,float totalFeesForStudent,float salariesTotal){
         TotalFeesForStudent=totalFeesForStudent;
         totalMoneyEarned=totalFeesForStudent;
         totalMoneySpent=salariesTotal;
+        String query="INSERT INTO school(TotalFeesForStudent,totalMoneyEarned,totalMoneySpent) VALUE(?,?,?)";
+        try{
+            PreparedStatement preparedStatement=connection.prepareStatement(query);
+            preparedStatement.setFloat(1,totalFeesForStudent);
+            preparedStatement.setFloat(2,totalFeesForStudent);
+            preparedStatement.setFloat(3,salariesTotal);
+            preparedStatement.executeUpdate();
+            System.out.println("create a school !\n\n ");
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
 
@@ -31,17 +42,33 @@ public class School {
             PreparedStatement preparedStatement=connection.prepareStatement(query);
             preparedStatement.setFloat(1,moneyEarned);
             preparedStatement.executeUpdate();
+
+            String q="SELECT totalMoneyEarned from school";
+            PreparedStatement ps=connection.prepareStatement(q);
+            ResultSet rs=ps.executeQuery();
+            rs.next();
+            Float totalMoneyEarned=rs.getFloat("totalMoneyEarned");
+            System.out.println("__ Actual total money earned : "+totalMoneyEarned);
+
         }catch (SQLException e){
             e.printStackTrace();
         }
 
     }
     public  void updateTotalMoneySpent(Connection connection,float moneySpent){
-        String query="UPDATE teachers SET totalMoneySpent=totalMoneySpent+?";
+        String query="UPDATE school SET totalMoneySpent=totalMoneySpent+?";
         try{
             PreparedStatement preparedStatement=connection.prepareStatement(query);
             preparedStatement.setFloat(1,moneySpent);
             preparedStatement.executeUpdate();
+             String q="SELECT totalMoneySpent from school";
+             PreparedStatement ps=connection.prepareStatement(q);
+             ResultSet rs=ps.executeQuery();
+            float totalMoneySpent=0;
+             if(rs.next()){
+                 totalMoneySpent=rs.getFloat("totalMoneySpent");
+             }
+            System.out.println("__ Actual total money spent : "+totalMoneySpent);
         }catch(SQLException e){
             e.printStackTrace();
         }
