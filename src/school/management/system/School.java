@@ -125,13 +125,15 @@ public class School {
         String query="INSERT INTO teachers(name,salary) VALUES(?,?)";
         System.out.print("Enter the name of the new teacher: ");
         String name= scanner.next();
-        Float salary=scanner.nextFloat();
+        System.out.print("Enter the salary of this new teacher: ");
+        float salary=scanner.nextFloat();
 
         try{
             PreparedStatement preparedStatement=connection.prepareStatement(query);
             preparedStatement.setString(1,name);
             preparedStatement.setFloat(2,salary);
             preparedStatement.executeUpdate();
+            System.out.println("the new teacher "+name+" is added successfully!");
         }catch(SQLException e){
             e.printStackTrace();
         }
@@ -142,7 +144,7 @@ public class School {
             PreparedStatement preparedStatement=connection.prepareStatement(query);
             preparedStatement.setInt(1,id);
             preparedStatement.executeUpdate();
-
+            System.out.println("teacher deleted successfully ! ");
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -152,6 +154,12 @@ public class School {
         try{
             PreparedStatement preparedStatement=connection.prepareStatement(query);
             preparedStatement.setInt(1,id);
+            ResultSet rs=preparedStatement.executeQuery();
+            while (rs.next()){
+                System.out.println("id : "+rs.getInt("id"));
+                System.out.println("name : "+rs.getString("name"));
+                System.out.println("salary : "+rs.getFloat("salary"));
+            }
         }catch(SQLException e){
             e.printStackTrace();
         }

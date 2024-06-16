@@ -381,24 +381,45 @@ public class SchoolManagSys {
     }
 
     static void modifyNameTeacher(Connection connection,Scanner scanner,int id){
-        System.out.print("Enter the new name : ");
-        String name=scanner.next();
-        String query="UPDATE teachers SET name=? WHERE id=?";
+        String q="SELECT name FROM teachers WHERE id=?";
         try{
-            PreparedStatement preparedStatement=connection.prepareStatement(query);
-            preparedStatement.setString(1,name);
-            preparedStatement.setInt(2,id);
+            PreparedStatement ps=connection.prepareStatement(q);
+            ps.setInt(1,id);
+            ResultSet rs=ps.executeQuery(); //we are sure that the id exists = rs doesn't return void
+            rs.next();
+            String odlName=rs.getString("name");
+            System.out.println("you want to modify the name of "+odlName+" :)");
+            System.out.print("Enter the new name : ");
+            String name=scanner.next();
+            String query="UPDATE teachers SET name=? WHERE id=?";
+            try{
+                PreparedStatement preparedStatement=connection.prepareStatement(query);
+                preparedStatement.setString(1,name);
+                preparedStatement.setInt(2,id);
+                preparedStatement.executeUpdate();
+                System.out.println("name changed successfully from "+odlName+" to "+name);
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
         }catch(SQLException e){
             e.printStackTrace();
         }
+
     }
     static void addTosalary(School school,Connection connection,float salaryToAdd,int id){
         String query="UPDATE teachers SET salary=salary+? WHERE id=?";
+        String q="SELECT salary FROM tecahers WHERE id=?";
         try{
+            PreparedStatement ps=connection.prepareStatement(q);
+            ps.setInt(1,id);
+            ResultSet rs=ps.executeQuery();
+            rs.next();
+            float oldSalary=rs.getFloat("salary");
             PreparedStatement preparedStatement=connection.prepareStatement(query);
             preparedStatement.setFloat(1,salaryToAdd);
             preparedStatement.setInt(2,id);
             preparedStatement.executeUpdate();
+            System.out.println("salary chnaged from "+oldSalary+" to "+(oldSalary+salaryToAdd));
         }catch(SQLException e){
             e.printStackTrace();
         }
@@ -410,12 +431,16 @@ public class SchoolManagSys {
             PreparedStatement preparedStatement1=connection.prepareStatement(query1);
             preparedStatement1.setInt(1,id);
             ResultSet resultSet=preparedStatement1.executeQuery();
-            if(resultSet.getFloat("salary")>=salaryToSub){
+            resultSet.next();
+            float oldSalary=resultSet.getFloat("salary");
+            if(oldSalary>=salaryToSub){
                 String query2="UPDATE teachers SET salary=salary-? WHERE id=?";
                 PreparedStatement preparedStatement2=connection.prepareStatement(query2);
                 preparedStatement2.setFloat(1,salaryToSub);
                 preparedStatement2.setInt(2,id);
                 preparedStatement2.executeUpdate();
+                System.out.println("the salary is changed from "+oldSalary+" to "+(oldSalary-salaryToSub));
+
             }else{
                 System.out.println("oops! negative salary value");
             }
