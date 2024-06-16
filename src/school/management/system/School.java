@@ -138,13 +138,27 @@ public class School {
             e.printStackTrace();
         }
     }
-    void deleteTeacher(Connection connection,int id){
+    void deleteTeacher(Connection connection,Scanner scanner,int id){
+        String q="SELECT name FROM teachers WHERE id=?";
         String query="DELETE FROM teachers WHERE id=?";
         try{
-            PreparedStatement preparedStatement=connection.prepareStatement(query);
-            preparedStatement.setInt(1,id);
-            preparedStatement.executeUpdate();
-            System.out.println("teacher deleted successfully ! ");
+            PreparedStatement ps=connection.prepareStatement(q);
+            ps.setInt(1,id);
+            ResultSet rs=ps.executeQuery();
+
+           if(rs.next()){
+               String teacher=rs.getString("name");
+               System.out.print("confirm deletion of \""+teacher+"\" (Y/N) : ");
+               String answer=scanner.next();
+               if(answer.equalsIgnoreCase("y")){
+                   PreparedStatement preparedStatement=connection.prepareStatement(query);
+                   preparedStatement.setInt(1,id);
+                   preparedStatement.executeUpdate();
+                   System.out.println("teacher deleted successfully ! ");
+               }else System.out.println("cancel deletion ");
+           }else{
+               System.out.println("id \""+id+"\" not found !!");
+           }
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -155,10 +169,12 @@ public class School {
             PreparedStatement preparedStatement=connection.prepareStatement(query);
             preparedStatement.setInt(1,id);
             ResultSet rs=preparedStatement.executeQuery();
-            while (rs.next()){
-                System.out.println("id : "+rs.getInt("id"));
-                System.out.println("name : "+rs.getString("name"));
-                System.out.println("salary : "+rs.getFloat("salary"));
+            if(rs.next()){
+                    System.out.println("id : "+rs.getInt("id"));
+                    System.out.println("name : "+rs.getString("name"));
+                    System.out.println("salary : "+rs.getFloat("salary"));
+            }else{
+                System.out.println("id "+id+" not found !");
             }
         }catch(SQLException e){
             e.printStackTrace();

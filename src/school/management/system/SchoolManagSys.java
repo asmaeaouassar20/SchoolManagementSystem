@@ -216,58 +216,60 @@ public class SchoolManagSys {
                         case 2 :{
                             System.out.print("Enter the id of the teacher you want to modify: ");
                             int id=scanner.nextInt();
-                            String query="SELECT id FROM teachers WHERE id=?";
+                            String query="SELECT name FROM teachers WHERE id=?";
                             try{
                                 PreparedStatement preparedStatement=connection.prepareStatement(query);
 
                                 preparedStatement.setInt(1,id);
 
                                 ResultSet resultSet=preparedStatement.executeQuery();
-                                if(resultSet.next()){
-                                    System.out.println("1: modify name");
-                                    System.out.println("2: modify salary");
+                               if(resultSet.next()){
+                                   System.out.println("you want to set the teachers : <<"+resultSet.getString("name")+">>");
 
-                                    System.out.print("Enter your choice : ");
-                                    int choice3=scanner.nextInt();
-                                    switch (choice3){
-                                        case 1:{
-                                            modifyNameTeacher(connection,scanner,id);
-                                            break;
-                                        }
-                                        case 2 :{
-                                            System.out.println("1 : add to salary");
-                                            System.out.println("2 : substruct from a salary");
-                                            System.out.print("Enter your choice : ");
-                                            int choice4=scanner.nextInt();
-                                            switch (choice4){
-                                                case 1 :{
-                                                    System.out.print("amount to add to salary : ");
-                                                    float  salaryToAdd=scanner.nextFloat();
-                                                    addTosalary(school,connection,salaryToAdd,id);
-                                                    break;
-                                                }
-                                                case 2 :{
-                                                    System.out.print("amount to substruct from salary : ");
-                                                    float  salaryToSub=scanner.nextFloat();
-                                                    if(salaryToSub<0) throw new ExceptionSalary(salaryToSub);
-                                                    subFromsalary(school,connection,salaryToSub,id);
-                                                    break;
-                                                }
-                                                default:
-                                                    System.out.println("invalid choice ! ");
-                                                    break;
-                                            }
-                                            break;
-                                        }
-                                        default:
-                                            System.out.println("invalid choice ! ");
-                                            break;
+                                   System.out.println("1: modify name");
+                                   System.out.println("2: modify salary");
 
-                                    }
+                                   System.out.print("Enter your choice : ");
+                                   int choice3=scanner.nextInt();
+                                   switch (choice3){
+                                       case 1:{
+                                           modifyNameTeacher(connection,scanner,id);
+                                           break;
+                                       }
+                                       case 2 :{
+                                           System.out.println("1 : add to salary");
+                                           System.out.println("2 : substruct from a salary");
+                                           System.out.print("Enter your choice : ");
+                                           int choice4=scanner.nextInt();
+                                           switch (choice4){
+                                               case 1 :{
+                                                   System.out.print("amount to add to salary : ");
+                                                   float  salaryToAdd=scanner.nextFloat();
+                                                   addTosalary(school,connection,salaryToAdd,id);
+                                                   break;
+                                               }
+                                               case 2 :{
+                                                   System.out.print("amount to substruct from salary : ");
+                                                   float  salaryToSub=scanner.nextFloat();
+                                                   if(salaryToSub<0) throw new ExceptionSalary(salaryToSub);
+                                                   subFromsalary(school,connection,salaryToSub,id);
+                                                   break;
+                                               }
+                                               default:
+                                                   System.out.println("invalid choice ! ");
+                                                   break;
+                                           }
+                                           break;
+                                       }
+                                       default:
+                                           System.out.println("invalid choice ! ");
+                                           break;
 
-                                }else{
-                                    System.out.println("id="+id+" not found");
-                                }
+                                   }
+
+                               }else{
+                                   System.out.println("\"id "+id+"\" not found !");
+                               }
                             }catch (SQLException | ExceptionSalary e){
                                 e.printStackTrace();
                             }
@@ -276,7 +278,7 @@ public class SchoolManagSys {
                         case 3 :{
                             System.out.print("Enter id of teacher to delete: ");
                             int id=scanner.nextInt();
-                            school.deleteTeacher(connection,id);
+                            school.deleteTeacher(connection,scanner,id);
                             break;
                         }
                         case 4 :{
@@ -294,7 +296,8 @@ public class SchoolManagSys {
                 case 3 :{
                     System.out.println("\nthank you for using School Management System");
                     return;
-                }
+                } default:
+                    System.out.println("invalid choice !");
             }
         }
 
@@ -408,7 +411,7 @@ public class SchoolManagSys {
     }
     static void addTosalary(School school,Connection connection,float salaryToAdd,int id){
         String query="UPDATE teachers SET salary=salary+? WHERE id=?";
-        String q="SELECT salary FROM tecahers WHERE id=?";
+        String q="SELECT salary FROM teachers WHERE id=?";
         try{
             PreparedStatement ps=connection.prepareStatement(q);
             ps.setInt(1,id);
@@ -419,7 +422,8 @@ public class SchoolManagSys {
             preparedStatement.setFloat(1,salaryToAdd);
             preparedStatement.setInt(2,id);
             preparedStatement.executeUpdate();
-            System.out.println("salary chnaged from "+oldSalary+" to "+(oldSalary+salaryToAdd));
+            System.out.println("old salary : "+oldSalary);
+            System.out.println("salary changed from "+oldSalary+" to "+(oldSalary+salaryToAdd));
         }catch(SQLException e){
             e.printStackTrace();
         }
