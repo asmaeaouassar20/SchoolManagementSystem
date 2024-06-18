@@ -121,84 +121,75 @@ public class SchoolManagSys {
                     System.out.println("4 : view student");
                     System.out.print("enter your choice: ");
                     int choice2=scanner.nextInt();
-                    switch (choice2){
-                        case 1 : school.addStudent(connection,scanner,totalFeesForStudent);
-                            break;
-                        case 2: {
-                            System.out.print("Enter the id of the student you want to modify: ");
-                            int id=scanner.nextInt();
-                            scanner.nextLine(); //consume the new line
-                            try{
-                                 String query="SELECT id FROM students WHERE id=?";
+                    scanner.nextLine(); //consume the new line
+                    System.out.print("enter id of the student: ");
+                    int id=scanner.nextInt();
+                    scanner.nextLine(); //consume the new line
+                    try {
+                        String query = "SELECT name FROM students WHERE id=?";
 
-                                PreparedStatement preparedStatement=connection.prepareStatement(query);
+                        PreparedStatement preparedStatement = connection.prepareStatement(query);
+                        preparedStatement.setInt(1, id);
+                        ResultSet resultSet = preparedStatement.executeQuery();
 
-                                preparedStatement.setInt(1,id);
+                        if (resultSet.next()) {
+                            String name=resultSet.getString("name");
+                            switch (choice2) {
+                                case 1:
+                                    school.addStudent(connection, scanner, totalFeesForStudent);
+                                    break;
+                                case 2: {
+                                        System.out.println("student selected is <<" + name + ">>");
+                                        System.out.println("1: modify name");
+                                        System.out.println("2: modify the grade");
+                                        System.out.println("3: pay fees");
 
-                                ResultSet resultSet=preparedStatement.executeQuery();
-                                if(resultSet.next()){
-                                    String r="SELECT name FROM students WHERE id=?";
-                                    PreparedStatement pr=connection.prepareStatement(r);
-                                    pr.setInt(1,id);
-                                    ResultSet rs=pr.executeQuery();
-                                    rs.next();
-                                    String student=rs.getString("name");
-                                    System.out.println("student selected is <<"+student+">>");
-                                    System.out.println("1: modify name");
-                                    System.out.println("2: modify the grade");
-                                    System.out.println("3: pay fees");
-
-                                    System.out.print("Enter your choice : ");
-                                    int choice3=scanner.nextInt();
-                                    switch (choice3){
-                                        case 1:{
-                                            modifyNameStudent(connection,scanner,id);
-                                            break;
+                                        System.out.print("Enter your choice : ");
+                                        int choice3 = scanner.nextInt();
+                                        switch (choice3) {
+                                            case 1: {
+                                                modifyNameStudent(connection, scanner, id);
+                                                break;
+                                            }
+                                            case 2: {
+                                                try {
+                                                    modifyGrade(connection, scanner, id, name);
+                                                } catch (ExceptionGrade e) {
+                                                    System.out.println("entered grade not valid ! ");
+                                                    e.printStackTrace();
+                                                }
+                                                break;
+                                            }
+                                            case 3: {
+                                                System.out.print("fees paid: ");
+                                                float feesPaid = scanner.nextFloat();
+                                                payFees(school, connection, id, feesPaid);
+                                                break;
+                                            }
+                                            default:
+                                                System.out.println("invalid choice  ! ");
+                                                break;
                                         }
-                                        case 2 :{
-                                            modifyGrade(connection,scanner,id,student);
-                                            break;
-                                        }
-                                        case 3 :{
-                                            System.out.print("fees paid: ");
-                                            float feesPaid=scanner.nextFloat();
-                                            payFees(school,connection,id,feesPaid);
-                                            break;
-                                        }
-                                        default:
-                                            System.out.println("invalid choice  ! ");
-                                            break;
-
+                                        break;
                                     }
-
-                                }else{
-                                    System.out.println("id="+id+" not found");
-                                }
-                            }catch (SQLException | ExceptionGrade e){
-                                e.printStackTrace();
+                                case 3: {
+                                school.deleteStudent(connection, id,name);
+                                break;
                             }
-
-
-                            break;
+                                case 4: {
+                                school.viewStudent(connection, id);
+                                break;
+                            }
+                                default: {
+                                    System.out.println("invalid choice ! ");
+                                    break;
+                                }
+                        }  }else {
+                            System.out.println("id " + id + " not found !");
                         }
-                        case 3 : {
-                            System.out.print("Enter the id of student to delete: ");
-                            int id=scanner.nextInt();
-                            school.deleteStudent(connection,id);
-                            break;
-                        }
-                        case 4 :{
-                            System.out.print("Enter id : ");
-                            int id=scanner.nextInt();
-                            school.viewStudent(connection,id);
-                            break;
-                        }
-                        default:{
-                            System.out.println("invalid choice ! ");
-                            break;
-                        }
+                    }catch (SQLException e){
+                        e.printStackTrace();
                     }
-
                     break;
                 }
                 case 2 : {

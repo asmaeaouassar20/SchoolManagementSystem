@@ -16,15 +16,27 @@ public class School {
     private  float totalMoneySpent;
 
     public School(Connection connection,float totalFeesForStudent,float salariesTotal){
+        String Query="SELECT count(*) FROM students";
+        int nbrStudents=0;
+        try{
+            PreparedStatement ps=connection.prepareStatement(Query);
+            ResultSet rs=ps.executeQuery();
+            if(rs.next()){
+                nbrStudents=rs.getInt("count(*)");
+                System.out.println("number of students enrolled: "+nbrStudents);
+            }
+        }catch (SQLException e ){
+            e.printStackTrace();
+        }
         TotalFeesForStudent=totalFeesForStudent;
-        totalMoneyEarned=totalFeesForStudent;
+        totalMoneyEarned=totalFeesForStudent*nbrStudents;
         totalMoneySpent=salariesTotal;
         String query="INSERT INTO school(TotalFeesForStudent,totalMoneyEarned,totalMoneySpent) VALUE(?,?,?)";
         try{
             PreparedStatement preparedStatement=connection.prepareStatement(query);
-            preparedStatement.setFloat(1,totalFeesForStudent);
-            preparedStatement.setFloat(2,totalFeesForStudent);
-            preparedStatement.setFloat(3,salariesTotal);
+            preparedStatement.setFloat(1,TotalFeesForStudent);
+            preparedStatement.setFloat(2,totalMoneyEarned);
+            preparedStatement.setFloat(3,totalMoneySpent);
             preparedStatement.executeUpdate();
             System.out.println("create a school !\n\n ");
         }catch (SQLException e){
@@ -93,12 +105,13 @@ public class School {
             e.printStackTrace();
         }
     }
-    void deleteStudent(Connection connection,int id){
+    void deleteStudent(Connection connection,int id,String name){
         String query="DELETE FROM students WHERE id=?";
         try{
-            PreparedStatement preparedStatement=connection.prepareStatement(query);
-            preparedStatement.setInt(1,id);
-            preparedStatement.executeUpdate();
+                PreparedStatement preparedStatement=connection.prepareStatement(query);
+                preparedStatement.setInt(1,id);
+                preparedStatement.executeUpdate();
+                System.out.println("student "+name+" is successfully deleted !");
         }catch (SQLException e){
             e.printStackTrace();
         }
