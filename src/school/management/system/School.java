@@ -93,13 +93,18 @@ public class School {
         String name=scanner.next();
 
         String query="INSERT INTO students(name,feesPaid) VALUES(?,?)";
+        String q="UPDATE school SET totalMoneyEarned=totalMoneyEarned+?";
         try{
             PreparedStatement preparedStatement=connection.prepareStatement(query);
+            PreparedStatement ps=connection.prepareStatement(q);
 
             preparedStatement.setString(1,name);
             preparedStatement.setFloat(2,totalFeesForStudent);
+            ps.setFloat(1,totalFeesForStudent);
 
             preparedStatement.executeUpdate();
+            ps.executeUpdate();
+
             System.out.println("student \""+name+"\" added successfully ! \n");
         }catch(SQLException e){
             e.printStackTrace();
@@ -141,11 +146,18 @@ public class School {
         System.out.print("Enter the salary of this new teacher: ");
         float salary=scanner.nextFloat();
 
+        String q="UPDATE school SET totalMoneySpent=totalMoneySpent+?";
+
         try{
             PreparedStatement preparedStatement=connection.prepareStatement(query);
+            PreparedStatement ps=connection.prepareStatement(q);
+
             preparedStatement.setString(1,name);
             preparedStatement.setFloat(2,salary);
+            ps.setFloat(1,salary);
+
             preparedStatement.executeUpdate();
+            ps.executeUpdate();
             System.out.println("the new teacher "+name+" is added successfully!");
         }catch(SQLException e){
             e.printStackTrace();
