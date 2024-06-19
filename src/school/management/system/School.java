@@ -59,7 +59,7 @@ public class School {
             PreparedStatement ps=connection.prepareStatement(q);
             ResultSet rs=ps.executeQuery();
             rs.next();
-            Float totalMoneyEarned=rs.getFloat("totalMoneyEarned");
+            float totalMoneyEarned=rs.getFloat("totalMoneyEarned");
             System.out.println("__ Actual total money earned : "+totalMoneyEarned);
 
         }catch (SQLException e){
