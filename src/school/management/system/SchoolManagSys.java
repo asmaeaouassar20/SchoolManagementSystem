@@ -119,12 +119,16 @@ public class SchoolManagSys {
                     System.out.println("2 : set a student");
                     System.out.println("3 : delete a student");
                     System.out.println("4 : view student");
+                    System.out.println("5 : view all students");
                     System.out.print("enter your choice: ");
                     int choice2=scanner.nextInt();
                     scanner.nextLine(); //consume the new line
                     if(choice2==1){
                         school.addStudent(connection, scanner, totalFeesForStudent);
-                    }else{
+                    }else if(choice2==5){
+                        school.viewAllStudents(connection);
+                    }
+                    else{
                         System.out.print("enter id of the student: ");
                         int id=scanner.nextInt();
                         scanner.nextLine(); //consume the new line
@@ -201,12 +205,16 @@ public class SchoolManagSys {
                     System.out.println("2 : set a teacher");
                     System.out.println("3 : delete a teacher");
                     System.out.println("4 : view teacher");
+                    System.out.println("5 : view all students");
                     System.out.print("Enter your choice: ");
                     int choice2=scanner.nextInt();
                     scanner.nextLine();//consume line
                   if(choice2==1){
                       school.addTeacher(connection,scanner);
-                  }else{
+                  }else if(choice2==5){
+                      school.viewAllTeachers();
+                  }
+                  else{
                       System.out.print("enter the id of the teacher : ");
                       int id=scanner.nextInt();
                       scanner.nextLine();

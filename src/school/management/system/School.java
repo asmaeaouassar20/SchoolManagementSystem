@@ -133,15 +133,36 @@ public class School {
             PreparedStatement preparedStatement=connection.prepareStatement(query);
             preparedStatement.setInt(1,id);
             ResultSet resultSet=preparedStatement.executeQuery();
-            while(resultSet.next()){
-                System.out.println("id : "+resultSet.getInt("id"));
+
+            if(resultSet.next()){
+                System.out.println("id : "+id);
                 System.out.println("name : "+resultSet.getString("name"));
                 System.out.println("grade : "+resultSet.getFloat("grade"));
-                System.out.println("fees paid : "+resultSet.getFloat("feesPaid"));
+                System.out.println("fees Paid : "+resultSet.getFloat("feesPaid"));
             }
         }catch(SQLException e){
             e.printStackTrace();
         }
+    }
+    void viewAllStudents(Connection connectinon){
+        String query="SELECT * FROM students";
+        System.out.println("_______________________________________________________________________________________");
+        System.out.println("    id               name                      grade                  fees paid        ");
+        System.out.println("_______________________________________________________________________________________");
+        try{
+            PreparedStatement preparedStatement=connectinon.prepareStatement(query);
+            ResultSet resultSet=preparedStatement.executeQuery();
+            while(resultSet.next()){
+                int id=resultSet.getInt("id");
+                String name=resultSet.getString("name");
+                float grade=resultSet.getFloat("grade");
+                float feesPaid=resultSet.getFloat("feesPaid");
+                System.out.printf("   %d           %s                   %f                   %f        ",id,name,grade,feesPaid);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        System.out.println();
     }
 
     // ---------------------------------------------------------------
@@ -211,5 +232,6 @@ public class School {
             e.printStackTrace();
         }
     }
+    void viewAllTeachers()
 
 }
