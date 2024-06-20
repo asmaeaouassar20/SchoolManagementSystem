@@ -176,7 +176,7 @@ public class SchoolManagSys {
                                         break;
                                     }
                                     case 3: {
-                                        school.deleteStudent(connection, id,name);
+                                        school.deleteStudent(connection,scanner, id,name);
                                         break;
                                     }
                                     case 4: {
@@ -284,7 +284,7 @@ public class SchoolManagSys {
                                       break;
                               }}
                           else{
-                              System.out.println("oops! id"+id+" not found !");
+                              System.out.println("oops! id "+id+" not found !");
                           }
                       }catch (SQLException e){
                           e.printStackTrace();
@@ -412,7 +412,6 @@ public class SchoolManagSys {
             preparedStatement.executeUpdate();
             System.out.println("old salary : "+oldSalary);
             System.out.println("salary changed from "+oldSalary+" to "+(oldSalary+salaryToAdd));
-            school.updateTotalMoneyEarned(connection,salaryToAdd);
         }catch(SQLException e){
             e.printStackTrace();
         }
@@ -433,7 +432,6 @@ public class SchoolManagSys {
                 preparedStatement2.setInt(2,id);
                 preparedStatement2.executeUpdate();
                 System.out.println("the salary is changed from "+oldSalary+" to "+(oldSalary-salaryToSub));
-                school.updateTotalMoneyEarned(connection,-salaryToSub);
             }else{
                 System.out.println("oops! negative salary value");
             }

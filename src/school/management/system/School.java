@@ -110,16 +110,22 @@ public class School {
             e.printStackTrace();
         }
     }
-    void deleteStudent(Connection connection,int id,String name){
+    void deleteStudent(Connection connection,Scanner scanner,int id,String name){
+        System.out.print("confirm deletion of \""+name+"\" (Y/N) : ");
+        String answer = scanner.next();
         String query="DELETE FROM students WHERE id=?";
-        try{
-                PreparedStatement preparedStatement=connection.prepareStatement(query);
-                preparedStatement.setInt(1,id);
-                preparedStatement.executeUpdate();
-                System.out.println("student "+name+" is successfully deleted !");
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
+       if(answer.equalsIgnoreCase("y")){
+           try{
+               PreparedStatement preparedStatement=connection.prepareStatement(query);
+               preparedStatement.setInt(1,id);
+               preparedStatement.executeUpdate();
+               System.out.println("student "+name+" is successfully deleted !");
+           }catch (SQLException e){
+               e.printStackTrace();
+           }
+       }else{
+           System.out.println("cancel deletion ");
+       }
     }
     void viewStudent(Connection connection,int id){
         String query="SELECT * FROM students WHERE id=?";
