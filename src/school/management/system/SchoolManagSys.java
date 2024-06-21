@@ -64,7 +64,7 @@ public class SchoolManagSys {
                     }
                     else{
                         stringBuilder.append(w);
-                        stringBuilder.append(" ");
+                        stringBuilder.append(" "); // add space between the first and the last name of the teacher
                     }
                 }
                 String name=stringBuilder.toString().substring(0,stringBuilder.toString().length()-1);
@@ -72,15 +72,19 @@ public class SchoolManagSys {
                 String query="INSERT INTO teachers(name,salary) VALUES(?,?)";
                 PreparedStatement preparedStatement=connection.prepareStatement(query);
 
-                preparedStatement.setString(1,name);
-                preparedStatement.setFloat(2,salary);
+                if(name!=null && salary!=0){
+                    preparedStatement.setString(1,name);
+                    preparedStatement.setFloat(2,salary);
 
-                preparedStatement.executeUpdate();
+                    preparedStatement.executeUpdate();
+                }
+
                 line=bufferedReader1.readLine();
             }
             System.out.println("the 'teachers' table is filled with success ! \n\n");
 
 
+            // students
             System.out.print("the total fees each student should pay is : ");
             totalFeesForStudent=scanner.nextFloat();
             line=bufferedReader2.readLine();
@@ -212,7 +216,7 @@ public class SchoolManagSys {
                   if(choice2==1){
                       school.addTeacher(connection,scanner);
                   }else if(choice2==5){
-                      school.viewAllTeachers();
+                      school.viewAllTeachers(connection);
                   }
                   else{
                       System.out.print("enter the id of the teacher : ");

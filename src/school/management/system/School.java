@@ -144,20 +144,20 @@ public class School {
             e.printStackTrace();
         }
     }
-    void viewAllStudents(Connection connectinon){
+    void viewAllStudents(Connection connection){
         String query="SELECT * FROM students";
         System.out.println("_______________________________________________________________________________________");
         System.out.println("    id               name                      grade                  fees paid        ");
         System.out.println("_______________________________________________________________________________________");
         try{
-            PreparedStatement preparedStatement=connectinon.prepareStatement(query);
+            PreparedStatement preparedStatement=connection.prepareStatement(query);
             ResultSet resultSet=preparedStatement.executeQuery();
             while(resultSet.next()){
                 int id=resultSet.getInt("id");
                 String name=resultSet.getString("name");
                 float grade=resultSet.getFloat("grade");
                 float feesPaid=resultSet.getFloat("feesPaid");
-                System.out.printf("   %d           %s                   %f                   %f        ",id,name,grade,feesPaid);
+                System.out.printf("   %d           %s                   %f                   %f        \n",id,name,grade,feesPaid);
             }
         }catch (SQLException e){
             e.printStackTrace();
@@ -232,6 +232,24 @@ public class School {
             e.printStackTrace();
         }
     }
-    void viewAllTeachers()
+    void viewAllTeachers(Connection connection){
+        String query="SELECT * FROM teachers";
+        System.out.println("______________________________________________________________________________");
+        System.out.println("    id               name                                   salary            ");
+        System.out.println("______________________________________________________________________________");
+        try{
+            PreparedStatement preparedStatement=connection.prepareStatement(query);
+            ResultSet resultSet=preparedStatement.executeQuery();
+            while(resultSet.next()){
+                int id=resultSet.getInt("id");
+                String name=resultSet.getString("name");
+                float salary=resultSet.getFloat("salary");
+                System.out.printf("    %d               %s                      %f            \n",id,name,salary);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        System.out.println();
+    }
 
 }
