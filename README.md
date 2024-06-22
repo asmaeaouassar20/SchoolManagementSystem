@@ -26,7 +26,7 @@ The system uses a MySQL database to store and retrieve information.
 
 ## Setup Instructions
 ### Database Setup
-1. Install MySQL
+1. Install MySQL : 
   Ensure MySQL server is installed and running on your machine
 2. Create Database:
   create a database named : schoolmanagsystem
