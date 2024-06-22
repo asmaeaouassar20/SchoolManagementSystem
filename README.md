@@ -19,3 +19,20 @@ The system uses a MySQL database to store and retrieve information.
   console-based interactive menu fro easy navigation and operation.
 
 ## Prerequisites
+- Java Development Kit (JDK) 8 or higher
+- MySQL database server
+- MySQL JDBC Driver
+- Text files with initial data for teachers and students.
+
+## Setup Instructions
+### Database Setup
+1. Install MySQL
+  Ensure MySQL server is installed and running on your machine
+2. Create Database:
+  create a database named : schoolmanagsystem
+  ```
+  CREATE DATABASE schoolmanagsystem;
+  ```
+3. Create tables: Create the necessary tables for storing teacher and student data
+ 
+  
