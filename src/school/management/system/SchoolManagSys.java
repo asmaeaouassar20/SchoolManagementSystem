@@ -14,7 +14,8 @@ public class SchoolManagSys {
     Connection connection=null;
     // **********************************************************
     float totalFeesForStudent; // Before adding any student in the database, totalFeesForStudent specified by the school must be paid
-    float salariesTotal;
+    float salariesTotal; // remember we have a text file that contains the names of teachers and their salaries
+                        // this variable is used to calculate the total salaries
 
     public SchoolManagSys(){
 
@@ -51,6 +52,7 @@ public class SchoolManagSys {
 
             // populate the database from the files
             String line=bufferedReader1.readLine();
+            // teachers
             while(line!=null){
                 String[] words=line.split(" ");
 

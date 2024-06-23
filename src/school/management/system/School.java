@@ -16,6 +16,7 @@ public class School {
     private  float totalMoneySpent;
 
     public School(Connection connection,float totalFeesForStudent,float salariesTotal){
+        // calculate the total number of students enrolled in the school, so that we can calculate the total money earned using  "TotalFeesForStudent"
         String Query="SELECT count(*) FROM students";
         int nbrStudents=0;
         try{
@@ -48,7 +49,7 @@ public class School {
 
 
 
-     void updateTotalMoneyEarned(Connection connection,float moneyEarned){
+    void updateTotalMoneyEarned(Connection connection,float moneyEarned){
         String query="UPDATE school SET totalMoneyEarned=totalMoneyEarned+?";
         try{
             PreparedStatement preparedStatement=connection.prepareStatement(query);
@@ -88,6 +89,7 @@ public class School {
 
 
 
+    // --------- Student ------------------------------------------------------
     void addStudent(Connection connection, Scanner scanner, float totalFeesForStudent){
         System.out.print("the name of the student: ");
         String name=scanner.next();
@@ -165,7 +167,7 @@ public class School {
         System.out.println();
     }
 
-    // ---------------------------------------------------------------
+    // ---------- Teacher -----------------------------------------------------
     void addTeacher(Connection connection,Scanner scanner){
         String query="INSERT INTO teachers(name,salary) VALUES(?,?)";
         System.out.print("Enter the name of the new teacher: ");
